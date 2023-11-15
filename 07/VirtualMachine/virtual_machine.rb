@@ -23,9 +23,9 @@ class VirtualMachine
       next if parser.command.empty?
 
       case parser.command_type
-      when 'C_ARITHMETIC'
+      when 'C_ARITHMETIC' then
         code_writer.write_aristhmetic(parser.arg1)
-      when 'C_PUSH', 'C_POP'
+      when 'C_PUSH', 'C_POP' then
         code_writer.write_push_pop(parser.command_type, parser.arg1, parser.arg2)
       end
     end

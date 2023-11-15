@@ -19,9 +19,9 @@ class CodeWriter
 
   def write_aristhmetic(command)
     case command
-    when 'add', 'sub', 'and', 'or'
+    when 'add', 'sub', 'and', 'or' then
       write_binary_operation(command)
-    when 'neg', 'not'
+    when 'neg', 'not' then
       write_unary_operation(command)
     end
   end
@@ -69,11 +69,11 @@ class CodeWriter
     case command
     when 'add' then
       write_code('D=D+M')
-    when 'sub'
+    when 'sub' then
       write_code('D=M-D')
-    when 'and'
+    when 'and' then
       write_code('D=D&M')
-    when 'or'
+    when 'or' then
       write_code('D=D|M')
     end
     write_push_from_d_register
@@ -87,7 +87,7 @@ class CodeWriter
     case command
     when 'neg' then
       write_code('M=-M')
-    when 'not'
+    when 'not' then
       write_code('M=!M')
     end
   end
