@@ -3,6 +3,7 @@
 class CodeWriter
   def initialize(file)
     @file = File.open(file, 'w')
+    @symbol_num = 0
   end
 
   def write_push_pop(command_type, segment, index)
@@ -23,6 +24,8 @@ class CodeWriter
       write_binary_operation(command)
     when 'neg', 'not' then
       write_unary_operation(command)
+    when 'eq', 'gt', 'lt' then
+      write_comp_operation(command)
     end
   end
 
@@ -90,5 +93,40 @@ class CodeWriter
     when 'not' then
       write_code('M=!M')
     end
+  end
+
+   def write_comp_operation(command)
+    write_pop_to_a_register
+    write_code('D=M')
+    write_pop_to_a_register
+    true_symbol = symbol
+    false_symbol = symbol
+
+    case command
+    when 'eq' then
+      comp_mnemock = 'JEQ'
+    when 'gt' then
+      comp_mnemock = 'JGT'
+    when 'lt' then
+      comp_mnemock = 'JLT'
+    end
+
+    write_codes([
+      'D=M-D',
+      "@#{true_symbol}",
+      "D;#{comp_mnemock}",
+      'D=0',
+      "@#{false_symbol}",
+      '0;JMP',
+      "(#{true_symbol})",
+      'D=-1',
+      "(#{false_symbol})"
+    ])
+    write_push_from_d_register
+  end
+
+  def symbol
+    @symbol_num += 1
+    "SYMBOL#{@symbol_num}"
   end
 end
