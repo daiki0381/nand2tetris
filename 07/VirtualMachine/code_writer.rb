@@ -18,6 +18,10 @@ class CodeWriter
     @symbol_num = 0
   end
 
+  def set_file_name(file_name)
+    @ffile_name = File.basename(file_name, '.vm')
+  end
+
   def write_push(_command_type, segment, index)
     if segment == 'constant' then
       write_codes([
@@ -29,6 +33,12 @@ class CodeWriter
       write_push_from_register_segment(segment, index)
     elsif ADDRESS_SEGMENTS.keys.include?(segment) then
       write_push_from_address_segment(segment, index)
+    elsif segment == 'static' then
+      write_codes([
+        "@#{@file_name}.#{index}",
+        'D=M'
+      ])
+      write_push_from_d_register
     end
   end
 
@@ -37,6 +47,13 @@ class CodeWriter
       write_pop_to_register_segment(segment, index)
     elsif ADDRESS_SEGMENTS.keys.include?(segment) then
       write_pop_to_address_segment(segment, index)
+    elsif segment == 'static' then
+      write_pop_to_a_register
+      write_codes([
+        'D=M',
+        "@#{@file_name}.#{index}",
+        'M=D'
+      ])
     end
   end
 

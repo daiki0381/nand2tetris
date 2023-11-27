@@ -16,6 +16,7 @@ class VirtualMachine
   private
 
   def translate_file(file, code_writer)
+    code_writer.set_file_name(file)
     parser = Parser.new(file)
     while parser.has_more_commands?
       parser.advance
