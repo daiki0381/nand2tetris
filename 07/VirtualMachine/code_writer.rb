@@ -1,20 +1,33 @@
 # frozen_string_literal: true
 
 class CodeWriter
+  REGISTER_SEGMENTS = {
+    'local' => 'LCL',
+    'argument' => 'ARG',
+    'this' => 'THIS',
+    'that' => 'THAT'
+  }.freeze
+
   def initialize(file)
     @file = File.open(file, 'w')
     @symbol_num = 0
   end
 
-  def write_push_pop(command_type, segment, index)
-    if command_type == 'C_PUSH' then
-      if segment == 'constant' then
-        write_codes([
-          "@#{index}",
-          'D=A'
-        ])
-        write_push_from_d_register
-      end
+  def write_push(_command_type, segment, index)
+    if segment == 'constant' then
+      write_codes([
+        "@#{index}",
+        'D=A'
+      ])
+      write_push_from_d_register
+    elsif REGISTER_SEGMENTS.keys.include?(segment) then
+      write_push_from_register_segment(segment, index)
+    end
+  end
+
+  def write_pop(command_type, segment, index)
+    if REGISTER_SEGMENTS.keys.include?(segment) then     
+      write_pop_to_register_segment(segment, index)
     end
   end
 
@@ -125,6 +138,34 @@ class CodeWriter
     write_push_from_d_register
   end
 
+  def write_push_from_register_segment(segment, index)
+    base_address = REGISTER_SEGMENTS[segment]
+
+    write_codes([
+      "@#{base_address}",
+      'A=M'
+    ])
+    index.to_i.times do
+      write_code('A=A+1')
+    end
+    write_code('D=M')
+    write_push_from_d_register
+  end
+
+  def write_pop_to_register_segment(segment, index)
+    base_address = REGISTER_SEGMENTS[segment]
+
+    write_pop_to_a_register
+    write_codes([
+      'D=M',
+      "@#{base_address}"
+    ])
+    index.to_i.times do
+      write_code('A=A+1')
+    end
+    write_code('M=D')
+  end
+  
   def symbol
     @symbol_num += 1
     "SYMBOL#{@symbol_num}"
