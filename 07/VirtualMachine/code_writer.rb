@@ -184,7 +184,8 @@ class CodeWriter
     write_pop_to_a_register
     write_codes([
       'D=M',
-      "@#{base_address}"
+      "@#{base_address}",
+      'A=M'
     ])
     index.to_i.times do
       write_code('A=A+1')
