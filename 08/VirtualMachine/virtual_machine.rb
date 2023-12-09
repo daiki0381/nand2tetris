@@ -6,11 +6,26 @@ require_relative './parser'
 
 class VirtualMachine
   def execute
-    file = ARGV[0]
-    if file.end_with?('.vm') then
-      code_writer = CodeWriter.new(file.gsub(/\.vm$/, '.asm'))
-      translate_file(file, code_writer)
+    path = ARGV[0]
+    if path.end_with?('.vm') then
+      code_writer = CodeWriter.new(path.gsub(/\.vm$/, '.asm'))
+      translate_file(path, code_writer)
+    else
+      dir = path.end_with?('/') ? path[..-2] : path
+      code_writer = CodeWriter.new("#{dir}/#{File.basename(dir)}.asm")
+
+      if Dir.entries(dir).any? {|file| File.basename(file) == 'Sys.vm' }
+        code_writer.write_init
+      end
+
+      Dir.foreach(dir) do |file|
+        next unless File.extname(file) == '.vm' && !File.basename(file).include?('._')
+        file_path = "#{dir}/#{file}"
+        translate_file(file_path, code_writer)        
+      end
     end
+    
+    code_writer.close
   end
 
   private
@@ -36,9 +51,16 @@ class VirtualMachine
         code_writer.write_goto(parser.arg1)
       when 'C_IF' then
         code_writer.write_if(parser.arg1)
+      when 'C_FUNCTION' then
+        code_writer.write_function(parser.arg1, parser.arg2)
+      when 'C_RETURN' then
+        code_writer.write_return
+      when 'C_CALL' then
+        code_writer.write_call(parser.arg1, parser.arg2)
       end
     end
-    code_writer.close
+
+    parser.close
   end
 end
 

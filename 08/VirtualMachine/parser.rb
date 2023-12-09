@@ -8,7 +8,7 @@ class Parser
     'pop' => 'C_POP',
     'label' => 'C_LABEL',
     'goto' => 'C_GOTO',
-    'if' => 'C_IF',
+    'if-goto' => 'C_IF',
     'function' => 'C_FUNCTION',
     'return' => 'C_RETURN',
     'call' => 'C_CALL'
@@ -45,5 +45,9 @@ class Parser
     return unless %w(C_PUSH C_POP C_FUNCTION C_CALL).include?(command_type)
 
     command[2]
+  end
+
+  def close
+    @file.close
   end
 end
