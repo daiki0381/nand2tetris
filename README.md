@@ -4,7 +4,7 @@
 
 # Nand2Tetris :smiley_cat:
 
-Implmentation of Nand2Tetris :smiley_cat:
+Implmentation of Nand2Tetris.
 
 ## What is Nand2tetris?
 
@@ -14,10 +14,11 @@ Implmentation of Nand2Tetris :smiley_cat:
 
 ## Chapters
 
-- **hardware** ... Hardware (chapter 1 ~ 5)
-- **assembler** ... Assembler which translate assembly to machine language by Ruby(chapter 6)
-- **vmtranslator** ... VMtranslator which translate intermediate code to assembly by Ruby(chapter 7/8)
-- **jackcompiler** ... Jack Compiler which compiles **Jack(Object oriented language like Java,C#)** to intermediate language code by Ruby(chapter 10/11)
+- **hardware** ... Hardware（chapter 1 ~ 5）
+- **assembler** ... Assembler which translate assembly to machine language by Ruby（chapter 6）
+- **vmtranslator** ... VMtranslator which translate intermediate code to assembly by Ruby（chapter 7/8）
+- **jackcompiler** ... Jack Compiler which compiles Jack（Object oriented language like Java,C#）to intermediate language code by Ruby（chapter 10/11）
+- **os** ... Operating System（chapter 12）
 
 
 ## Reference
